@@ -26,6 +26,9 @@ public class Publication extends BasicEntity {
     @OneToMany(mappedBy = "publication", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "publication", orphanRemoval = true)
+    private List<React> react = new ArrayList<>();
+
     public enum Visibility {
         PUBLIC, // PUBLIC
         PRIVATE // PRIVE

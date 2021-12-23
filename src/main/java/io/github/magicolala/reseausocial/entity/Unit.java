@@ -12,8 +12,9 @@ import java.util.List;
 @Setter
 public class Unit extends BasicEntity {
 
-    private String title; // libelle
-    private String description; // description
+    private String  title; // libelle
+    private String  description; // description
+    private boolean isActive; // actif ?
 
     @ManyToMany
     @JoinTable(name = "unit_admins",
@@ -21,8 +22,9 @@ public class Unit extends BasicEntity {
             inverseJoinColumns = @JoinColumn(name = "admin_id"))
     private List<User> admins = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "adhere_id")
-    private Adhere adhere;
+
+
+    @OneToMany(mappedBy = "unit", orphanRemoval = true)
+    private List<Adhere> adheres = new ArrayList<>();
 
 }

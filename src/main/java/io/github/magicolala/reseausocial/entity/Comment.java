@@ -14,11 +14,12 @@ public class Comment extends BasicEntity {
 
     private String text; // texte
 
-    @OneToMany(mappedBy = "comment", orphanRemoval = true)
-    private List<User> users = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "publication_id")
     private Publication publication;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private User user;
 
 }

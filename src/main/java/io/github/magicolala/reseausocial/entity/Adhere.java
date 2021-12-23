@@ -1,21 +1,26 @@
 package io.github.magicolala.reseausocial.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
 @Setter
 public class Adhere extends BasicEntity {
 
-    @OneToMany(mappedBy = "adhere", orphanRemoval = true)
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
-    @OneToMany(mappedBy = "adhere", orphanRemoval = true)
-    private List<Unit> units = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    @JsonIgnore
+    private Unit unit;
 
 }

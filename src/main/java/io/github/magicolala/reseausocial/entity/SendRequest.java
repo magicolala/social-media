@@ -1,14 +1,12 @@
 package io.github.magicolala.reseausocial.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -17,11 +15,14 @@ public class SendRequest extends BasicEntity {
 
     private State state;
 
-    @OneToMany(mappedBy = "sendRequest", orphanRemoval = true)
-    private List<User> friends = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "friend_id")
+    @JsonIgnore
+    private User friend;
 
-    @OneToOne(orphanRemoval = true)
+    @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public enum State {

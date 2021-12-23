@@ -16,7 +16,6 @@ public class DetailsUtilisateur implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + utilisateur.getRole().toString());
 
         return Collections.singletonList(grantedAuthority);
@@ -49,7 +48,12 @@ public class DetailsUtilisateur implements UserDetails {
 
     @Override
     public boolean isEnabled() {
+        // TODO
         return true;
+    }
+
+    public Long getId() {
+        return utilisateur.getId();
     }
 
 }

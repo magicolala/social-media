@@ -15,11 +15,11 @@ public class DetailsUtilisateurService implements UserDetailsService {
     private final UserRepository utilisateurRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User utilisateur = utilisateurRepository.findByEmail(username);
+
         if (utilisateur != null) {
             return new DetailsUtilisateur(utilisateur);
-
         }
 
         throw new UsernameNotFoundException(username + " pas dans la BD");

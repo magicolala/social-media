@@ -18,11 +18,11 @@ public class SendMessage extends BasicEntity {
     private boolean isRead; // lu
 
     @ManyToOne
-    @JoinColumn(name = "transmitter_ID")
+    @JoinColumn(name = "transmitter_id")
     private User transmitter; // émetteur
 
     @ManyToOne
-    @JoinColumn(name = "recipient_ID")
+    @JoinColumn(name = "recipient_id")
     private User recipient; // destinataire
 
 }

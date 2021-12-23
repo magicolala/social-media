@@ -19,17 +19,16 @@ public class SecurityController {
     private final UserService     userService;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
     public ResponseEntity<User> register(@RequestBody User user) {
 
         try {
-            user.setRole(User.Role.USER);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRole(User.Role.USER); // L'utilisateur enregistré a le rôle USER
+            user.setPassword(passwordEncoder.encode(user.getPassword())); // Mot de passe chiffré
 
-            User _user = (User) userService.save(user);
+            User _user = userService.save(user);
 
             return new ResponseEntity<>(_user, HttpStatus.CREATED);
-
         } catch (Exception e) {
             e.printStackTrace();
 

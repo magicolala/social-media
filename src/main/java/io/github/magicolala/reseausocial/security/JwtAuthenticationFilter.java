@@ -30,10 +30,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             loginModel = new ObjectMapper().readValue(request.getInputStream(), LoginModel.class);
         } catch (Exception e) {
             e.printStackTrace();
+
             return null;
         }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginModel.getUsername(), loginModel.getPassword());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginModel.getEmail(), loginModel.getPassword());
 
         return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     }
@@ -54,6 +55,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                           .sign(Algorithm.HMAC256(SecurityProperties.SECRET));
         response.addHeader("Authorization", token);
     }
-
 
 }

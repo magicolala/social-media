@@ -24,12 +24,13 @@ public class User extends BasicEntity {
     @Column(nullable = false, unique = true)
     private String  email; // email
     private String  phone; // telephone
+    @Column(length = 64)
     private String  avatar; // avatar
     private String  description; // description
     @Column(nullable = false)
-    private boolean isActive; // actif ?
+    private boolean isActive = false; // actif ?
     @Enumerated(EnumType.STRING)
-    private Role role; // rôle
+    private Role    role; // rôle
 
     @OneToMany(mappedBy = "transmitter", orphanRemoval = true)
     private List<SendMessage> sendMessages = new ArrayList<>();
@@ -40,24 +41,14 @@ public class User extends BasicEntity {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Publication> publications = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "react_id")
-    private React react;
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<React> reacts = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "admins")
-    private List<Unit> units = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "adhere_id")
-    private Adhere adhere;
-
-    @ManyToOne
-    @JoinColumn(name = "send_request_id")
-    private SendRequest sendRequest;
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Adhere> adheres = new ArrayList<>();
 
     public enum Gender {
         MALE, // MASCULIN

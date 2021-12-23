@@ -1,7 +1,11 @@
 package io.github.magicolala.reseausocial.controllers;
 
+import io.github.magicolala.reseausocial.entity.Comment;
 import io.github.magicolala.reseausocial.entity.Publication;
+import io.github.magicolala.reseausocial.entity.React;
+import io.github.magicolala.reseausocial.service.CommentService;
 import io.github.magicolala.reseausocial.service.PublicationService;
+import io.github.magicolala.reseausocial.service.ReactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -15,8 +19,11 @@ import java.util.Optional;
 @RequestMapping("/api/publication")
 @RequiredArgsConstructor
 public class PublicationController {
+
     @Qualifier(value = "Publication")
     private final PublicationService publicationService;
+    private final ReactService   reactService;
+    private final CommentService commentService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Publication> getPublicationById(@PathVariable(value = "id") Long id) {
@@ -24,7 +31,6 @@ public class PublicationController {
         Optional<Publication> publication = (Optional<Publication>) publicationService.getById(id);
 
         return publication.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
     }
 
     @PostMapping()
@@ -34,8 +40,9 @@ public class PublicationController {
             Publication _publication = (Publication) publicationService.save(publication);
 
             return new ResponseEntity<>(_publication, HttpStatus.CREATED);
-
         } catch (Exception e) {
+            e.printStackTrace();
+
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -46,15 +53,16 @@ public class PublicationController {
 
         try {
             List<Publication> publications;
-            publications = publicationService.listAll();
+            publications = publicationService.listAll(); // TODO Pagination
 
             if (publications.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
             return new ResponseEntity<>(publications, HttpStatus.OK);
-
         } catch (Exception e) {
+            e.printStackTrace();
+
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -82,15 +90,36 @@ public class PublicationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deletePublication(@PathVariable("id") long id) {
-
         try {
             publicationService.delete(id);
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         } catch (Exception e) {
+            e.printStackTrace();
+
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
+    @PutMapping("/like/{id}")
+    public ResponseEntity<React> likePublication(@PathVariable Long id) {
+        React react = reactService.save(id);
+
+        if (react != null) {
+            return new ResponseEntity(react, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/comment/{id}")
+    public ResponseEntity<Comment> commentPublication(@RequestBody Comment comment, @PathVariable Long id) {
+
+        if (commentService.save(comment, id) != null) {
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

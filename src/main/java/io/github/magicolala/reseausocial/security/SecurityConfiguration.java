@@ -31,9 +31,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                 .authorizeRequests()
                 .antMatchers("/api/secured").authenticated()
-                .antMatchers("/api/secured/admin").hasRole(User.Role.ADMIN.toString());
+                .antMatchers("/api/secured/admin").hasRole(User.Role.ADMIN.toString())
+        ;
     }
 
     @Bean
