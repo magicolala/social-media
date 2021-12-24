@@ -19,9 +19,8 @@ public class UserUtil {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            User   user            = userService.findByEmail(currentUserName);
 
-            return user;
+            return userService.findByEmail(currentUserName);
         }
 
         return null;

@@ -19,7 +19,7 @@ public class DetailsUtilisateurService implements UserDetailsService {
         User utilisateur = utilisateurRepository.findByEmail(username);
 
         if (utilisateur != null) {
-            return new DetailsUtilisateur(utilisateur);
+            return utilisateur;
         }
 
         throw new UsernameNotFoundException(username + " pas dans la BD");

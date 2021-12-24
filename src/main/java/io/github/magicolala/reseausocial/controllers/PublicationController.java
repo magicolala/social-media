@@ -90,6 +90,7 @@ public class PublicationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deletePublication(@PathVariable("id") long id) {
+
         try {
             publicationService.delete(id);
 
@@ -120,6 +121,7 @@ public class PublicationController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
     }
 
 }

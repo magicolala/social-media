@@ -25,8 +25,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (token != null && !token.isEmpty()) {
@@ -40,12 +39,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(grantedAuthority));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("token invalide");
             }
         }
-
         chain.doFilter(request, response);
     }
 

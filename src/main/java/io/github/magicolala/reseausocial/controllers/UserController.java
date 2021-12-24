@@ -1,6 +1,11 @@
 package io.github.magicolala.reseausocial.controllers;
 
+import io.github.magicolala.reseausocial.entity.Publication;
+import io.github.magicolala.reseausocial.entity.SendMessage;
+import io.github.magicolala.reseausocial.entity.SendRequest;
 import io.github.magicolala.reseausocial.entity.User;
+import io.github.magicolala.reseausocial.service.SendMessageService;
+import io.github.magicolala.reseausocial.service.SendRequestService;
 import io.github.magicolala.reseausocial.service.UserService;
 import io.github.magicolala.reseausocial.utils.FileUploadUtil;
 import io.github.magicolala.reseausocial.utils.UserUtil;
@@ -12,15 +17,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
-    private final UserUtil    userUtil;
+    private final UserService        userService;
+    private final UserUtil           userUtil;
+    private final SendRequestService sendRequestService;
+    private final SendMessageService sendMessageService;
 
     @PostMapping(value = "/upload-avatar")
     public ResponseEntity<User> uploadFile(@RequestParam("avatar") MultipartFile multipartFile) {
@@ -52,23 +58,60 @@ public class UserController {
 
 
     @PostMapping(value = "/send-request/{id}")
-    public ResponseEntity<User> sendRequest(@PathVariable("id") long id) {
+    public ResponseEntity<SendRequest> sendRequest(@PathVariable("id") long id) {
 
         try {
-            User emitter = userUtil.getCurrentUser();
+            SendRequest sendRequest = sendRequestService.save(id);
 
-            if (emitter != null) {
-                Optional<User> receiver = userService.findById(id);
-
-                if (receiver.isPresent()) {
-
-                }
-            }
-
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(sendRequest, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
 
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+    @PostMapping(value = "/accept-friend/{idRequest}/{isAccept}")
+    public ResponseEntity<SendRequest> acceptFriend(@PathVariable("idRequest") long id, @PathVariable("isAccept") String isAccept) {
+
+        try {
+            SendRequest sendRequest = sendRequestService.accept(id, isAccept);
+
+            return new ResponseEntity<>(sendRequest, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+    @PostMapping(value = "/send-message/{idUser}")
+    public ResponseEntity<SendMessage> sendMessage(@RequestBody SendMessage message, @PathVariable("idUser") long idUser) {
+
+        try {
+            SendMessage sendMessage = sendMessageService.save(message, idUser);
+
+            return new ResponseEntity<>(sendMessage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+    @PutMapping(value = "/update-profil")
+    public ResponseEntity<User> sendMessage(@RequestBody User user) {
+
+        try {
+            return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

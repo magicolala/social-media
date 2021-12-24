@@ -2,6 +2,7 @@ package io.github.magicolala.reseausocial.controllers;
 
 import io.github.magicolala.reseausocial.entity.Adhere;
 import io.github.magicolala.reseausocial.entity.Unit;
+import io.github.magicolala.reseausocial.entity.User;
 import io.github.magicolala.reseausocial.service.AdhereService;
 import io.github.magicolala.reseausocial.service.UnitService;
 import io.github.magicolala.reseausocial.utils.UserUtil;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,7 @@ public class UnitController {
     @Qualifier(value = "Unit")
     private final UnitService   unitService;
     private final AdhereService adhereService;
+    private final UserUtil      userUtil;
 
     @GetMapping("/{id}")
     public ResponseEntity<Unit> getUnitById(@PathVariable(value = "id") Long id) {
@@ -34,6 +37,10 @@ public class UnitController {
     public ResponseEntity<Unit> saveUnit(@RequestBody Unit unit) {
 
         try {
+            List<User> admins = new ArrayList<>();
+            User       admin  = userUtil.getCurrentUser();
+            admins.add(admin);
+            unit.setAdmins(admins);
             Unit _unit = (Unit) unitService.save(unit);
 
             return new ResponseEntity<>(_unit, HttpStatus.CREATED);
@@ -67,7 +74,6 @@ public class UnitController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Unit> updateUnit(@RequestBody Unit unit, @PathVariable Long id) {
-
         Optional<Unit> unitAModifier = (Optional<Unit>) unitService.getById(id);
 
         if (unitAModifier.isPresent()) {
@@ -81,7 +87,6 @@ public class UnitController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
     @DeleteMapping("/{id}")
@@ -103,7 +108,6 @@ public class UnitController {
     public ResponseEntity<Adhere> updateUnit(@PathVariable Long id) {
 
         try {
-
             return new ResponseEntity<>(adhereService.save(id), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

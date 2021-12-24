@@ -22,7 +22,6 @@ public class Publication extends BasicEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     @OneToMany(mappedBy = "publication", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 

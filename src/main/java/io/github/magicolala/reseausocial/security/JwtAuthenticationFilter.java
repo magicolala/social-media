@@ -3,6 +3,7 @@ package io.github.magicolala.reseausocial.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.magicolala.reseausocial.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
-        DetailsUtilisateur detailsUtilisateur = (DetailsUtilisateur) authResult.getPrincipal();
+        User detailsUtilisateur = (User) authResult.getPrincipal();
 
         Collection<? extends GrantedAuthority> authorities = detailsUtilisateur.getAuthorities();
 
@@ -52,6 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                           .withExpiresAt(dateExpiration)
                           .withIssuedAt(new Date())
                           .withClaim("role", role)
+                          .withClaim("id", detailsUtilisateur.getId())
                           .sign(Algorithm.HMAC256(SecurityProperties.SECRET));
         response.addHeader("Authorization", token);
     }
