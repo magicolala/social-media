@@ -15,4 +15,5 @@ public interface UserService {
 
     User findByEmail(String email);
 
+    User upload(User user, User currentUser);
 }

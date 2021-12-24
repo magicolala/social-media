@@ -1,18 +1,19 @@
 package io.github.magicolala.reseausocial.controllers;
 
-import io.github.magicolala.reseausocial.entity.Comment;
-import io.github.magicolala.reseausocial.entity.Publication;
-import io.github.magicolala.reseausocial.entity.React;
-import io.github.magicolala.reseausocial.service.CommentService;
-import io.github.magicolala.reseausocial.service.PublicationService;
-import io.github.magicolala.reseausocial.service.ReactService;
+import io.github.magicolala.reseausocial.entity.*;
+import io.github.magicolala.reseausocial.service.*;
+import io.github.magicolala.reseausocial.utils.FileUploadUtil;
+import io.github.magicolala.reseausocial.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -21,9 +22,12 @@ import java.util.Optional;
 public class PublicationController {
 
     @Qualifier(value = "Publication")
-    private final PublicationService publicationService;
-    private final ReactService   reactService;
-    private final CommentService commentService;
+    private final PublicationService      publicationService;
+    private final PublicationExamService  publicationExamService;
+    private final PublicationMediaService publicationMediaService;
+    private final ReactService            reactService;
+    private final CommentService          commentService;
+    private final UserUtil                userUtil;
 
     @GetMapping("/{id}")
     public ResponseEntity<Publication> getPublicationById(@PathVariable(value = "id") Long id) {
@@ -38,6 +42,36 @@ public class PublicationController {
 
         try {
             Publication _publication = (Publication) publicationService.save(publication);
+
+            return new ResponseEntity<>(_publication, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @PostMapping("/exam")
+    public ResponseEntity<PublicationExam> savePublicationExam(@RequestBody PublicationExam publication) {
+
+        try {
+            PublicationExam _publication = (PublicationExam) publicationExamService.save(publication);
+
+            return new ResponseEntity<>(_publication, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @PostMapping("/media")
+    public ResponseEntity<PublicationMedia> savePublicationMedia(@RequestBody PublicationMedia publication) {
+
+        try {
+            PublicationMedia _publication = (PublicationMedia) publicationMediaService.save(publication);
 
             return new ResponseEntity<>(_publication, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -69,7 +103,7 @@ public class PublicationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Publication> updatePublication(@RequestBody Publication publication, @PathVariable Long id) {
+    public ResponseEntity<Publication> updatePublication(@RequestBody PublicationExam publication, @PathVariable Long id) {
 
         Optional<Publication> publicationAModifier = (Optional<Publication>) publicationService.getById(id);
 
@@ -120,6 +154,34 @@ public class PublicationController {
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @PostMapping(value = "/upload-media/{idPublicationMedia}")
+    public ResponseEntity<User> uploadFile(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long idPublicationMedia) {
+
+        try {
+            PublicationMedia publicationMedia = (PublicationMedia) publicationMediaService.getById(idPublicationMedia);
+
+            if (publicationMedia != null) {
+                String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+                publicationMedia.setFileName(fileName);
+                PublicationMedia _publicationMedia = (PublicationMedia) publicationService.save(publicationMedia);
+
+                String uploadDir = "src/main/resources/static/publication-media/" + _publicationMedia.getId();
+
+                FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+                return new ResponseEntity<>(null, HttpStatus.CREATED);
+            }
+
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

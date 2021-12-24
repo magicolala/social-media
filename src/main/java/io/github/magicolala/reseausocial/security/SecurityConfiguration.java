@@ -33,8 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                 .authorizeRequests()
-                .antMatchers("register").permitAll()
-                .antMatchers("login").permitAll()
+                .antMatchers("/register").permitAll()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/api/admin").hasRole(User.Role.ADMIN.toString())
                 .anyRequest().authenticated()
         ;

@@ -24,13 +24,13 @@ public class AdminController {
 
     @PutMapping("/deactivate-user/{id}")
     public ResponseEntity<User> deactivateUser(@PathVariable Long id) {
-        Optional<User> user = Optional.ofNullable(userService.getById(id));
+        Optional<User> _user = Optional.ofNullable(userService.getById(id));
 
-        if (user.isPresent()) {
-            User _user = user.get();
-            _user.setActive(false);
+        if (_user.isPresent()) {
+            User user = _user.get();
+            user.setActive(!user.isActive());
 
-            return new ResponseEntity(userService.save(_user), HttpStatus.OK);
+            return new ResponseEntity(userService.save(user), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -38,13 +38,13 @@ public class AdminController {
 
     @PutMapping("/deactivate-unit/{id}")
     public ResponseEntity deactivateUnit(@PathVariable Long id) {
-        Optional<Unit> unit = (Optional<Unit>) unitService.getById(id);
+        Optional<Unit> _unit = (Optional<Unit>) unitService.getById(id);
 
-        if (unit.isPresent()) {
-            Unit _unit = unit.get();
-            _unit.setActive(false);
+        if (_unit.isPresent()) {
+            Unit unit = _unit.get();
+            unit.setActive(!unit.isActive());
 
-            return new ResponseEntity(unitService.save(_unit), HttpStatus.OK);
+            return new ResponseEntity(unitService.save(unit), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

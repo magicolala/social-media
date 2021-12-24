@@ -22,9 +22,8 @@ public class Unit extends BasicEntity {
             inverseJoinColumns = @JoinColumn(name = "admin_id"))
     private List<User> admins = new ArrayList<>(); // Administrateurs de groupes
 
-
-
     @OneToMany(mappedBy = "unit", orphanRemoval = true)
     private List<Adhere> adheres = new ArrayList<>(); // Adhérer à un groupe
+
 
 }

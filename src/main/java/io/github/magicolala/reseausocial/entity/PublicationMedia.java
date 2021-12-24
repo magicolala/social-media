@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 @Setter
 public class PublicationMedia extends Publication {
 
+    private String         fileName;
     private ReferenceMedia referenceMedia; // referenceMedia
 
     public enum ReferenceMedia {

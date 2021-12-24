@@ -1,6 +1,5 @@
 package io.github.magicolala.reseausocial.controllers;
 
-import io.github.magicolala.reseausocial.entity.Publication;
 import io.github.magicolala.reseausocial.entity.SendMessage;
 import io.github.magicolala.reseausocial.entity.SendRequest;
 import io.github.magicolala.reseausocial.entity.User;
@@ -105,13 +104,30 @@ public class UserController {
     }
 
 
+    @PutMapping(value = "/read-message/{idMessage}")
+    public ResponseEntity<SendMessage> sendMessage(@PathVariable("idMessage") long idMessage) {
+
+        try {
+            SendMessage sendMessage = sendMessageService.read(idMessage);
+            return new ResponseEntity<>(sendMessage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
     @PutMapping(value = "/update-profil")
     public ResponseEntity<User> sendMessage(@RequestBody User user) {
 
         try {
-            return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+            User currentUser = userUtil.getCurrentUser();
+            return new ResponseEntity<>(userService.upload(user, currentUser), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
+
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

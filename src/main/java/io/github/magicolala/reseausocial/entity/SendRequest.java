@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class SendRequest extends BasicEntity {
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private State state = State.WAITING;
 
     @ManyToOne
     @JoinColumn(name = "friend_id")

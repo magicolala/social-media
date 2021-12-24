@@ -26,13 +26,30 @@ public class SendMessageServiceImpl implements SendMessageService {
             User recipient   = _recipient.get();
             User transmitter = userUtil.getCurrentUser();
 
-            message.setRecipient(recipient);
-            message.setTransmitter(transmitter);
+            if (transmitter.getFriends().contains(recipient)) {
+                message.setRecipient(recipient);
+                message.setTransmitter(transmitter);
 
-            return sendMessageRepository.save(message);
+                return sendMessageRepository.save(message);
+            }
         }
 
         return null;
+    }
+
+    @Override
+    public SendMessage read(long idMessage) {
+       Optional<SendMessage> _message = sendMessageRepository.findById(idMessage);
+
+       if (_message.isPresent()) {
+           SendMessage message = _message.get();
+
+           message.setRead(true);
+
+           return sendMessageRepository.save(message);
+       }
+
+       return null;
     }
 
 }

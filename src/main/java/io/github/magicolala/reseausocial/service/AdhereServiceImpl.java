@@ -16,16 +16,16 @@ import java.util.Optional;
 public class AdhereServiceImpl implements AdhereService {
 
     private final AdhereRepository adhereRepository;
-    private final UserUtil       userUtil;
-    private final UnitRepository unitRepository;
+    private final UserUtil         userUtil;
+    private final UnitRepository   unitRepository;
 
     @Override
     public Adhere save(Long idUnit) {
         Optional<Unit> unit = unitRepository.findById(idUnit);
 
         if (unit.isPresent()) {
-            Unit _unit = unit.get();
-            User           user = userUtil.getCurrentUser();
+            Unit   _unit  = unit.get();
+            User   user   = userUtil.getCurrentUser();
             Adhere adhere = new Adhere();
             adhere.setUser(user);
             adhere.setUnit(_unit);

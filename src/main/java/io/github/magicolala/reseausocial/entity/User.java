@@ -10,10 +10,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import static io.github.magicolala.reseausocial.entity.SendRequest.State.ACCEPTED;
 
 @Entity
 @Getter
@@ -35,9 +34,13 @@ public class User extends BasicEntity implements UserDetails {
     @Column(nullable = false)
     private boolean isActive = false; // actif ?
     @Enumerated(EnumType.STRING)
-    private Role    role; // rôle
+    private Role    role = Role.USER; // rôle
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<SendRequest> sendRequests = new ArrayList<>();
 
+    @OneToMany(mappedBy = "friend", orphanRemoval = true)
+    private List<SendRequest> receiveRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "transmitter", orphanRemoval = true)
     private List<SendMessage> sendMessages = new ArrayList<>();
@@ -102,7 +105,20 @@ public class User extends BasicEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isActive();
+    }
+
+    public List<User> getFriends() {
+        List<SendRequest> sendRequests = this.getSendRequests();
+        List<User> friends = new ArrayList<>();
+
+        sendRequests.forEach(sendRequest -> {
+            if (Objects.equals(sendRequest.getState().toString(), ACCEPTED.toString())) {
+                friends.add(sendRequest.getFriend());
+            }
+        });
+
+        return friends;
     }
 
 }

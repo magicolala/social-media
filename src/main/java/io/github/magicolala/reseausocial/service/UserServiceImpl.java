@@ -2,6 +2,7 @@ package io.github.magicolala.reseausocial.service;
 
 import io.github.magicolala.reseausocial.entity.User;
 import io.github.magicolala.reseausocial.repository.UserRepository;
+import io.github.magicolala.reseausocial.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,17 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return repository.findByEmail(email);
     }
+
+    @Override
+    public User upload(User user, User currentUser) {
+        currentUser.setFirstname(user.getFirstname());
+        currentUser.setLastname(user.getLastname());
+        currentUser.setDescription(user.getDescription());
+        currentUser.setGender(user.getGender());
+        currentUser.setPhone(user.getPhone());
+
+        return repository.save(currentUser);
+    }
+
 
 }

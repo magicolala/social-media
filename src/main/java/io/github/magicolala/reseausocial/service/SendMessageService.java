@@ -6,4 +6,6 @@ public interface SendMessageService {
 
     SendMessage save(SendMessage message, long idUser);
 
+    SendMessage read(long idMessage);
+
 }
