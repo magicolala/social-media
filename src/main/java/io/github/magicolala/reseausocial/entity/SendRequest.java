@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Getter
+//@Getter
 @Setter
 public class SendRequest extends BasicEntity {
 
@@ -28,6 +28,18 @@ public class SendRequest extends BasicEntity {
         WAITING, // EN ATTENTE
         ACCEPTED, // ACCEPTER
         REFUSED, // REFUSER
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public User getFriend() {
+        return friend;
+    }
+
+    public User getUser() {
+        return user;
     }
 
 }

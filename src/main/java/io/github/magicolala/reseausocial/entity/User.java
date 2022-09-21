@@ -15,7 +15,7 @@ import java.util.*;
 import static io.github.magicolala.reseausocial.entity.SendRequest.State.ACCEPTED;
 
 @Entity
-@Getter
+//@Getter
 @Setter
 public class User extends BasicEntity implements UserDetails {
 
@@ -119,6 +119,74 @@ public class User extends BasicEntity implements UserDetails {
         });
 
         return friends;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isActive() {
+        return true;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public List<SendRequest> getSendRequests() {
+        return sendRequests;
+    }
+
+    public List<SendRequest> getReceiveRequests() {
+        return receiveRequests;
+    }
+
+    public List<SendMessage> getSendMessages() {
+        return sendMessages;
+    }
+
+    public List<SendMessage> getReceiveMessages() {
+        return receiveMessages;
+    }
+
+    public List<Publication> getPublications() {
+        return publications;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public List<React> getReacts() {
+        return reacts;
+    }
+
+    public List<Adhere> getAdheres() {
+        return adheres;
     }
 
 }
